@@ -19,19 +19,12 @@ class PhaseChangeHandler {
         //   3. discount from the timer the time that has passed while being in the background
         //
         if newPhase == .active {
-            // print("GameTime - Active")
-            
             if (timerController.timers.isEmpty == false) {
                 if let activeTimer = timerController.activeTimer {
                     if (activeTimer.isPaused == false && activeTimer.timeRemaining > 0) {
-                        print("GameTime becoming active while timer is running")
-                        print("Recovering background time")
                         if let backgroundDate : Date = UserDefaults.standard.object(forKey: "backgroundTime") as? Date {
                             
                             let secondsInBackground : TimeInterval = Date.now.timeIntervalSince(backgroundDate)
-                            let formatter = DateComponentsFormatter()
-                            formatter.allowedUnits = [.second]
-                            print("App was in the background for \(formatter.string(from: secondsInBackground)!) seconds")
                             
                             if (Int(secondsInBackground) >= activeTimer.timeRemaining) {
                                 activeTimer.timeRemaining = 0
@@ -47,15 +40,9 @@ class PhaseChangeHandler {
             // Clear userDefaults
             UserDefaults.standard.removeObject(forKey: "backgroundTime")
             
-        } else if newPhase == .inactive {
-            // print("GameTime - Inactive")
         } else if newPhase == .background {
-            // print("GameTime - Background")
             if let activeTimer = timerController.activeTimer {
                 if (activeTimer.isPaused == false) {
-                    print("GameTime entering background mode while timer is running")
-                    print("Storing time")
-                    print("\(Date.now.description)")
                     // Store the Date when the app went into background
                     UserDefaults.standard.set(Date.now, forKey: "backgroundTime")
                 }
@@ -64,5 +51,4 @@ class PhaseChangeHandler {
     }
     
 }
-
 

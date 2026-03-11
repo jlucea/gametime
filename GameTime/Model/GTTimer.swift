@@ -95,18 +95,15 @@ public class GTTimer: ObservableObject, Identifiable {
     
     func start(){
         self.isPaused = false
-        print("Timer '" + name + "' started")
     }
     
     func pause(){
         self.isPaused = true
-        print("Timer '" + name + "' paused")
     }
     
     func resume(){
         if isPaused {
             self.isPaused = false
-            print("Timer '" + name + "' resumed")
         }
     }
     

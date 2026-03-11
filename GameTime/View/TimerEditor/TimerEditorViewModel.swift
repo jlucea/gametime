@@ -60,11 +60,6 @@ extension TimerEditorView {
             
             let totalSecondsSelected = duration.hours * 3600 + duration.minutes * 60 + duration.seconds
             
-            print("Timer editor save:")
-            print("Name: \(name)")
-            print("Duration: \(totalSecondsSelected)")
-            print("Color \(color.description)")
-            
             switch mode {
             case .create:
                 let newTimer = GTTimer(name: name, color: color, maxTime: totalSecondsSelected)

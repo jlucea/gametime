@@ -85,10 +85,8 @@ struct ActiveTimerView: View {
                     // Start/pause active timer button
                     Button (action: {
                         if (timer.isPaused) {
-                            print("PLAY timer \(timer.name): \(timer.timeRemaining) seconds left")
                             timer.start()
                         } else {
-                            print("PAUSE timer \(timer.name): \(timer.timeRemaining) seconds left")
                             timer.pause()
                         }
                     }, label: {
