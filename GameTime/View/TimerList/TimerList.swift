@@ -20,6 +20,13 @@ struct TimerList: View {
                         .tint(.red)
                         
                         Button {
+                            timerManager.resetTimer(timer)
+                        } label: {
+                            Label("timer_list.action.reset", systemImage: "arrow.counterclockwise.circle.fill")
+                        }
+                        .tint(.orange)
+                        
+                        Button {
                             onEdit(timer)
                         } label: {
                             Label("timer_editor.action.edit", systemImage: "pencil")

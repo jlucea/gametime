@@ -154,6 +154,21 @@ final class GTTimerManager : ObservableObject {
         timer.timeRemaining = max(adjustedTotalDuration - elapsedTime, 0)
     }
     
+    /// Resets a timer back to its configured maximum duration.
+    ///
+    /// If the timer is currently running, it is paused first.
+    ///
+    /// - Parameter timer: The timer to reset.
+    func resetTimer(_ timer: GTTimer) {
+        guard timers.contains(where: { $0.id == timer.id }) else { return }
+        
+        if !timer.isPaused {
+            timer.pause()
+        }
+        
+        timer.timeRemaining = timer.totalDuration
+    }
+    
 }
 
 extension GTTimerManager {

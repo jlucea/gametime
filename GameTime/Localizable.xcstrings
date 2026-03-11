@@ -447,6 +447,30 @@
           }
         }
       }
+    },
+    "timer_list.action.reset" : {
+      "comment" : "Reset action button shown in timer list swipe actions.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reiniciar"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reiniciar"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
