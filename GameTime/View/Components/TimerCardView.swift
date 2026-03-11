@@ -66,7 +66,9 @@ struct TimerCardView: View {
         .onTapGesture {
             // When the card view is tapped, the corresponding timer will activate
             if (controller.isActive(timer: timer) == false) {
-                controller.makeActive(timer)
+                withAnimation(.easeInOut(duration: 0.22)) {
+                    controller.makeActive(timer)
+                }
             }
         }
     } // Body

@@ -25,7 +25,6 @@ struct ActiveTimerView: View {
     private let timerNavigationAnimationDuration: TimeInterval = 0.22
     
     @State private var isAnimatingNavigation = false
-    @State private var navigationDirection: NavigationDirection = .next
     
     //
     // The active timer could be accessed through `controller.activeTimer`.
@@ -123,16 +122,16 @@ struct ActiveTimerView: View {
     }
     
     private var transitionForDirection: AnyTransition {
-        switch navigationDirection {
+        switch controller.lastNavigationDirection {
         case .next:
-            return .asymmetric(
-                insertion: .move(edge: .leading).combined(with: .opacity),
-                removal: .move(edge: .trailing).combined(with: .opacity)
-            )
-        case .previous:
             return .asymmetric(
                 insertion: .move(edge: .trailing).combined(with: .opacity),
                 removal: .move(edge: .leading).combined(with: .opacity)
+            )
+        case .previous:
+            return .asymmetric(
+                insertion: .move(edge: .leading).combined(with: .opacity),
+                removal: .move(edge: .trailing).combined(with: .opacity)
             )
         }
     }
@@ -140,7 +139,6 @@ struct ActiveTimerView: View {
     private func navigate(toNext: Bool) {
         guard controller.timers.count > 1, !isAnimatingNavigation else { return }
         isAnimatingNavigation = true
-        navigationDirection = toNext ? .next : .previous
         
         withAnimation(.easeInOut(duration: timerNavigationAnimationDuration)) {
             if toNext {
@@ -166,21 +164,14 @@ struct ActiveTimerView: View {
         }
         
         if horizontalTranslation > 0 {
-            // Swiping right activates the next timer.
-            navigate(toNext: true)
-        } else {
-            // Swiping left activates the previous timer.
+            // Swiping right activates the previous timer.
             navigate(toNext: false)
+        } else {
+            // Swiping left activates the next timer.
+            navigate(toNext: true)
         }
     }
 } // Struct
-
-private extension ActiveTimerView {
-    enum NavigationDirection {
-        case next
-        case previous
-    }
-}
 
 struct TimerControlView_Previews: PreviewProvider {
 

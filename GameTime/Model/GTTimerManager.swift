@@ -2,6 +2,11 @@
 import Foundation
 import SwiftUI
 
+enum TimerNavigationDirection {
+    case next
+    case previous
+}
+
 /// Manages a collection of `GTTimers`, allowing for adding, deleting, and switching
 /// between active timers. The class maintains the concept of an "active" timer, which
 /// is simply the timer currently selected. Only one timer can be active at a time,
@@ -17,6 +22,9 @@ final class GTTimerManager : ObservableObject {
     /// The currently active `GTTimer`, representing the selected timer.
     /// The active timer is updated when timers are added, deleted, or switched via methods like `activateNextTimer()` and `makeActive(_:)`.
     @Published private(set) var activeTimer: GTTimer?
+    
+    /// The last navigation direction used to switch the active timer.
+    @Published private(set) var lastNavigationDirection: TimerNavigationDirection = .next
         
     /// The index of the active timer in the `timers` array. Used internally to keep track of which timer is currently selected.
     private var activeTimerIndex: Int = 0
@@ -55,6 +63,7 @@ final class GTTimerManager : ObservableObject {
     func activateNextTimer() {
         guard !timers.isEmpty else { return }
         
+        lastNavigationDirection = .next
         activeTimer?.pause()
         if (activeTimerIndex < timers.count-1 ) {
             activeTimerIndex+=1
@@ -74,6 +83,7 @@ final class GTTimerManager : ObservableObject {
     func activatePreviousTimer() {
         guard !timers.isEmpty else { return }
         
+        lastNavigationDirection = .previous
         activeTimer?.pause()
         if activeTimerIndex > 0 {
             activeTimerIndex -= 1
@@ -120,6 +130,9 @@ final class GTTimerManager : ObservableObject {
     /// - Parameter timer: The `GTTimer` instance to be made active.
     func makeActive(_ timer: GTTimer) {
         guard let timerIndex = timers.firstIndex(where: { $0.id == timer.id }) else { return }
+        guard timerIndex != activeTimerIndex else { return }
+        
+        lastNavigationDirection = timerIndex < activeTimerIndex ? .previous : .next
 
         var wasRunning = false
         if let previousActiveTimer = activeTimer, !previousActiveTimer.isPaused {

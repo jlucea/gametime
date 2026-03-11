@@ -54,7 +54,9 @@ struct TimerRowView: View {
             }
             .contentShape(Rectangle())          // Ensures the whole area is tappable
             .onTapGesture {
-                timerManager.makeActive(timer)  // This will be triggered when tapping anywhere on the HStack
+                withAnimation(.easeInOut(duration: 0.22)) {
+                    timerManager.makeActive(timer)  // This will be triggered when tapping anywhere on the HStack
+                }
             }
         }
         .padding(.vertical, 6)
