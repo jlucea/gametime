@@ -101,6 +101,14 @@
 			path = TimerList;
 			sourceTree = "<group>";
 		};
+		6F24F7722F61CA2000ACDFB4 /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				6F45A4D92D1593E50042D03F /* PhaseChangeHandler.swift */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
 		6F370DFE290BEBF900A407C0 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,14 +119,6 @@
 				6FA853D828FB1F03005E4EC1 /* TimerCardView.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		6F45A4D82D1593D40042D03F /* Handler */ = {
-			isa = PBXGroup;
-			children = (
-				6F45A4D92D1593E50042D03F /* PhaseChangeHandler.swift */,
-			);
-			path = Handler;
 			sourceTree = "<group>";
 		};
 		6F6A2E072D172E4400862C6D /* Toolbar */ = {
@@ -159,7 +159,6 @@
 			isa = PBXGroup;
 			children = (
 				6FE6CF512D29971900FB78C5 /* App */,
-				6F45A4D82D1593D40042D03F /* Handler */,
 				6F23470F290290F600A765BE /* Model */,
 				6F23470529028FCA00A765BE /* View */,
 				6FA853CE28FB1A7A005E4EC1 /* Assets.xcassets */,
@@ -179,6 +178,7 @@
 		6FE6CF512D29971900FB78C5 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				6F24F7722F61CA2000ACDFB4 /* Lifecycle */,
 				6FA853CA28FB1A78005E4EC1 /* GameTimeApp.swift */,
 				6FE6CF522D29972E00FB78C5 /* ProcessInfo.swift */,
 			);
