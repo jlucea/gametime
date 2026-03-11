@@ -6,18 +6,36 @@ enum TimerViewSize {
     case medium     // For iPhone
 }
 
+///
+/// A SwiftUI view that displays and controls the currently active timer.
+///
+/// The view renders a circular progress indicator, the player's name,
+/// the remaining time, and playback controls (play/pause and next timer).
+///
+/// It observes a specific `GTTimer` instance so the UI updates whenever
+/// the timer's state changes (remaining time, pause state, progress, etc.).
+/// The view also accesses the shared `GTTimerManager` via the environment
+/// to trigger actions such as activating the next timer.
+///
 struct ActiveTimerView: View {
     
     @EnvironmentObject var controller : GTTimerManager
     
     //
-    // This View could perfectly get the active timer from controller. Instead, it uses an observed property timer.
+    // The active timer could be accessed through `controller.activeTimer`.
+    // However, the view observes a specific `GTTimer` instance directly.
     //
-    // This observed property would be needed even if the values displayed
-    //  on the view elements were taken from the controller (controller.activeTimer.name)!
+    // Observing the timer ensures that the view refreshes whenever the
+    // timer publishes updates (e.g. remaining time or pause state).
     //
-    @ObservedObject var timer : GTTimer
+    @ObservedObject var timer: GTTimer
     
+    /// Determines the layout scale of the view.
+    ///
+    /// The same UI is reused across devices, but elements such as
+    /// the circular progress indicator, fonts, and button sizes
+    /// adjust depending on whether the view is rendered for iPad
+    /// (`.large`) or iPhone (`.medium`).
     let size: TimerViewSize
     
     var body: some View {
@@ -42,11 +60,10 @@ struct ActiveTimerView: View {
                     .padding(.bottom, (size == .large ? 50 : 30))
                 
                 // MARK: Buttons
-                
                 let buttonSize = (size == .large ? CGFloat(66) : CGFloat(50))
                 HStack {
+                    // Start/pause active timer button
                     Button (action: {
-                        // start/pause active timer
                         if (timer.isPaused) {
                             print("PLAY timer \(timer.name): \(timer.timeRemaining) seconds left")
                             timer.start()
@@ -69,6 +86,7 @@ struct ActiveTimerView: View {
                     })
                     .padding(.trailing, (size == .large ? 50 : 28))
                     
+                    // Next timer button
                     Button (action: {
                         //
                         // "All observable objects automatically get access to an objectWillChange property,
