@@ -57,7 +57,7 @@ struct TimerRowView: View {
                 timerManager.makeActive(timer)  // This will be triggered when tapping anywhere on the HStack
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 6)
         .padding(.horizontal, 10)
         .animation(.easeInOut(duration: 0.3), value: editMode?.wrappedValue.isEditing)
     }
