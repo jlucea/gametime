@@ -2,9 +2,10 @@
 import Foundation
 import SwiftUI
 
-class PhaseChangeHandler {
+final class PhaseChangeHandler {
     
     public static let shared = PhaseChangeHandler()
+    private let backgroundTimeKey = "backgroundTime"
     
     private init() {}
     
@@ -18,37 +19,41 @@ class PhaseChangeHandler {
         //   2. recover that time when the app becomes active again
         //   3. discount from the timer the time that has passed while being in the background
         //
-        if newPhase == .active {
-            if (timerController.timers.isEmpty == false) {
-                if let activeTimer = timerController.activeTimer {
-                    if (activeTimer.isPaused == false && activeTimer.timeRemaining > 0) {
-                        if let backgroundDate : Date = UserDefaults.standard.object(forKey: "backgroundTime") as? Date {
-                            
-                            let secondsInBackground : TimeInterval = Date.now.timeIntervalSince(backgroundDate)
-                            
-                            if (Int(secondsInBackground) >= activeTimer.timeRemaining) {
-                                activeTimer.timeRemaining = 0
-                                activeTimer.pause()
-                            } else {
-                                // Subtract from active timer the time passed since the app entered background
-                                activeTimer.timeRemaining -= Int(secondsInBackground)
-                            }
-                        }
-                    }
-                }
+        switch newPhase {
+        case .active:
+            guard
+                !timerController.timers.isEmpty,
+                let activeTimer = timerController.activeTimer,
+                !activeTimer.isPaused,
+                activeTimer.timeRemaining > 0,
+                let backgroundDate = UserDefaults.standard.object(forKey: backgroundTimeKey) as? Date
+            else {
+                UserDefaults.standard.removeObject(forKey: backgroundTimeKey)
+                return
             }
-            // Clear userDefaults
-            UserDefaults.standard.removeObject(forKey: "backgroundTime")
             
-        } else if newPhase == .background {
-            if let activeTimer = timerController.activeTimer {
-                if (activeTimer.isPaused == false) {
-                    // Store the Date when the app went into background
-                    UserDefaults.standard.set(Date.now, forKey: "backgroundTime")
-                }
+            let secondsInBackground = max(Int(Date.now.timeIntervalSince(backgroundDate)), 0)
+            if secondsInBackground >= activeTimer.timeRemaining {
+                activeTimer.timeRemaining = 0
+                activeTimer.pause()
+            } else {
+                // Subtract from active timer the time passed since the app entered background.
+                activeTimer.timeRemaining -= secondsInBackground
             }
+            
+            UserDefaults.standard.removeObject(forKey: backgroundTimeKey)
+            
+        case .background:
+            guard let activeTimer = timerController.activeTimer, !activeTimer.isPaused else { return }
+            // Store the Date when the app went into background.
+            UserDefaults.standard.set(Date.now, forKey: backgroundTimeKey)
+            
+        case .inactive:
+            break
+            
+        @unknown default:
+            break
         }
     }
     
 }
-
