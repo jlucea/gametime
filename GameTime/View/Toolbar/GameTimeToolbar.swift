@@ -10,7 +10,7 @@ import SwiftUI
 struct GameTimeToolbar {
         
     /// The title displayed in the center of the toolbar.
-    private static let toolbarTitle = "GameTime"
+    private static let toolbarTitleKey: LocalizedStringKey = "app.title"
     
     /**
      Generates the toolbar content for the `GameTime` application.
@@ -41,7 +41,7 @@ struct GameTimeToolbar {
                 } )
             }
             ToolbarItem(placement: .principal) {
-                Text(toolbarTitle).font(.headline)
+                Text(toolbarTitleKey).font(.headline)
             }
             ToolbarItem(placement: .navigationBarLeading) {
                 if !controller.timers.isEmpty {

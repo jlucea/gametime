@@ -54,7 +54,7 @@ struct MainView: View {
                                                         timerToEdit = timer
                                                         showEditTimerScreen = true
                                                     } label: {
-                                                        Label("timer_editor.button.edit", systemImage: "pencil")
+                                                        Label("timer_editor.action.edit", systemImage: "pencil")
                                                     }
                                                     .tint(.blue)
                                                 }
@@ -78,7 +78,7 @@ struct MainView: View {
                                                         timerToEdit = timer
                                                         showEditTimerScreen = true
                                                     } label: {
-                                                        Label("timer_editor.button.edit", systemImage: "pencil")
+                                                        Label("timer_editor.action.edit", systemImage: "pencil")
                                                     }
                                                     .tint(.blue)
                                                 }

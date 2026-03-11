@@ -27,11 +27,11 @@ struct TimerEditorView: View {
     }
     
     private var navigationTitleKey: LocalizedStringKey {
-        viewModel.isCreateMode ? "timer_editor.navigation_title.create" : "timer_editor.navigation_title.edit"
+        viewModel.isCreateMode ? "timer_editor.title.create" : "timer_editor.title.edit"
     }
     
     private var saveButtonTitleKey: LocalizedStringKey {
-        viewModel.isCreateMode ? "timer_editor.button.create" : "timer_editor.button.save"
+        viewModel.isCreateMode ? "timer_editor.action.create" : "timer_editor.action.save"
     }
     
     // MARK: - Body
@@ -44,9 +44,9 @@ struct TimerEditorView: View {
                 Form {
                     // Timer name row
                     HStack {
-                        Text("Name")
+                        Text("timer_editor.field.name")
                             .frame(minWidth: 0, idealWidth: .infinity, alignment: .leading)
-                        TextField("Name", text: $viewModel.name)
+                        TextField("timer_editor.field.name", text: $viewModel.name)
                             .onChange(of: viewModel.name) { newValue in
                                 if newValue.count > maxNameLength {
                                     viewModel.name = String(newValue.prefix(maxNameLength))
@@ -60,7 +60,7 @@ struct TimerEditorView: View {
                     }
                     // Color picker row (opens a modal color selector)
                     HStack {
-                        Text("Color")
+                        Text("timer_editor.field.color")
                         HStack {
                             Spacer()
                             Circle()
@@ -79,7 +79,7 @@ struct TimerEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button("timer_editor.action.cancel") {
                         dismiss()
                     }
                 }
