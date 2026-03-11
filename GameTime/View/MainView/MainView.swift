@@ -21,7 +21,7 @@ struct MainView: View {
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         // MARK: iPad View
                         // Active timer and controls
-                        ActiveTimerView(timer: timerManager.activeTimer!, size: UIDevice.current.userInterfaceIdiom == .pad ? .large : .medium)
+                        ActiveTimerView(timer: timerManager.activeTimer!, size: .large)
                             .padding(.horizontal)
                         
                         // Timer cards
@@ -38,6 +38,7 @@ struct MainView: View {
                         GeometryReader { geometry in
                             let isLandscape = geometry.size.width > geometry.size.height
                             if isLandscape {
+                                //MARK: iPhone landscape
                                 HStack {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                         .padding(.horizontal, 24)
@@ -49,11 +50,13 @@ struct MainView: View {
                                         }
                                     }
                                     .listStyle(.plain)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                             } else {
-                                VStack {
+                                //MARK: iPhone portrait
+                                VStack(spacing: 10) {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
-                                        .padding(.trailing, 8)
                                     
                                     // Timer list
                                     List {
@@ -62,14 +65,14 @@ struct MainView: View {
                                         }
                                     }
                                     .listStyle(.plain)
-                                    .frame(height: 268)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                             }
                         }
                     }
                 }
             }
-            .padding(.top, 10)
             .toolbar {
                 GameTimeToolbar.content(showAddNewTimerScreen: $showAddNewTimerScreen, controller: timerManager)
             }
