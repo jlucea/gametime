@@ -4,6 +4,7 @@ import SwiftUI
 struct CreateTimerView: View {
     
     @StateObject private var viewModel: ViewModel
+    @FocusState private var isNameFieldFocused: Bool
     
     @State private var showColorPicker: Bool = false
     
@@ -32,6 +33,7 @@ struct CreateTimerView: View {
                                     viewModel.name = String(newValue.prefix(maxNameLenght))
                                 }
                             }
+                            .focused($isNameFieldFocused)
                             .multilineTextAlignment(.trailing)
                             .autocorrectionDisabled()
                             .submitLabel(.done)
@@ -72,6 +74,11 @@ struct CreateTimerView: View {
                     showColorPicker = false
                 }
                 .padding(.top, 18)
+            }
+            .onAppear {
+                DispatchQueue.main.async {
+                    isNameFieldFocused = true
+                }
             }
         }
     }
