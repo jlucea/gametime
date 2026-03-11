@@ -21,6 +21,12 @@ struct ActiveTimerView: View {
     
     @EnvironmentObject var controller : GTTimerManager
     
+    private let swipeActivationThreshold: CGFloat = 50
+    private let timerNavigationAnimationDuration: TimeInterval = 0.22
+    
+    @State private var isAnimatingNavigation = false
+    @State private var navigationDirection: NavigationDirection = .next
+    
     //
     // The active timer could be accessed through `controller.activeTimer`.
     // However, the view observes a specific `GTTimer` instance directly.
@@ -39,7 +45,22 @@ struct ActiveTimerView: View {
     let size: TimerViewSize
     
     var body: some View {
-        
+        ZStack {
+            timerContent
+                .id(timer.id)
+                .transition(transitionForDirection)
+        } // ZStack
+        .animation(.easeInOut(duration: timerNavigationAnimationDuration), value: timer.id)
+        .contentShape(Rectangle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    handleSwipe(value)
+                }
+        )
+    } // View
+    
+    private var timerContent: some View {
         ZStack {
             let circleSize = (size == .large ? CGFloat(400) : 280)
             CircularProgressView(color: timer.color, progress: timer.getProgress(), lineWidth: 18)
@@ -88,17 +109,7 @@ struct ActiveTimerView: View {
                     
                     // Next timer button
                     Button (action: {
-                        //
-                        // "All observable objects automatically get access to an objectWillChange property,
-                        //  which has a send() method we can all whenever we want observing views to refresh."
-                        //
-                        // We call objectWillChange.send() here for the view to be ready to update itself
-                        //  when we activate the next timer in the controller.
-                        //
-                        if (controller.timers.count > 1) {
-                            controller.objectWillChange.send()
-                            controller.activateNextTimer()
-                        }
+                        navigate(toNext: true)
                     }, label: {
                         Image(systemName: "arrow.right.circle")
                             .resizable()
@@ -108,10 +119,68 @@ struct ActiveTimerView: View {
                 }
                 Spacer()
             } // VStack
-        
         } // ZStack
-    } // View
+    }
+    
+    private var transitionForDirection: AnyTransition {
+        switch navigationDirection {
+        case .next:
+            return .asymmetric(
+                insertion: .move(edge: .leading).combined(with: .opacity),
+                removal: .move(edge: .trailing).combined(with: .opacity)
+            )
+        case .previous:
+            return .asymmetric(
+                insertion: .move(edge: .trailing).combined(with: .opacity),
+                removal: .move(edge: .leading).combined(with: .opacity)
+            )
+        }
+    }
+    
+    private func navigate(toNext: Bool) {
+        guard controller.timers.count > 1, !isAnimatingNavigation else { return }
+        isAnimatingNavigation = true
+        navigationDirection = toNext ? .next : .previous
+        
+        withAnimation(.easeInOut(duration: timerNavigationAnimationDuration)) {
+            if toNext {
+                controller.activateNextTimer()
+            } else {
+                controller.activatePreviousTimer()
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + timerNavigationAnimationDuration + 0.02) {
+            isAnimatingNavigation = false
+        }
+    }
+    
+    private func handleSwipe(_ value: DragGesture.Value) {
+        let horizontalTranslation = value.translation.width
+        let verticalTranslation = value.translation.height
+        
+        // Only react to intentional horizontal swipes.
+        guard abs(horizontalTranslation) > abs(verticalTranslation),
+              abs(horizontalTranslation) >= swipeActivationThreshold else {
+            return
+        }
+        
+        if horizontalTranslation > 0 {
+            // Swiping right activates the next timer.
+            navigate(toNext: true)
+        } else {
+            // Swiping left activates the previous timer.
+            navigate(toNext: false)
+        }
+    }
 } // Struct
+
+private extension ActiveTimerView {
+    enum NavigationDirection {
+        case next
+        case previous
+    }
+}
 
 struct TimerControlView_Previews: PreviewProvider {
 

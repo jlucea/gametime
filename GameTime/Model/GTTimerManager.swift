@@ -69,6 +69,24 @@ final class GTTimerManager : ObservableObject {
         }
     }
     
+    /// Activates the previous timer in the array. If the active timer is the first one,
+    /// it cycles back to the last timer in the array.
+    func activatePreviousTimer() {
+        guard !timers.isEmpty else { return }
+        
+        activeTimer?.pause()
+        if activeTimerIndex > 0 {
+            activeTimerIndex -= 1
+        } else {
+            activeTimerIndex = timers.count - 1
+        }
+        activeTimer = timers[activeTimerIndex]
+        
+        if (activeTimer?.timeRemaining ?? 0 > 0) {
+            activeTimer?.resume()
+        }
+    }
+    
     /// Deletes the specified timer from the collection. If the timer being deleted
     /// is the active timer, the active timer is reset to the first timer in the list.
     /// If the deleted timer was running, the new active timer will resume.
