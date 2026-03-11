@@ -30,18 +30,18 @@ import SwiftUI
 /// timer.start()
 /// ```
 ///
-public class GTTimer: ObservableObject {
+public class GTTimer: ObservableObject, Identifiable {
     /// A unique identifier for each GTTimer instance.
     public let id = UUID()
     
     /// The name associated with this timer, typically representing a player.
-    public let name: String
+    @Published public var name: String
     
     /// The color used for UI elements associated with this timer.
-    public let color: Color
+    @Published public var color: Color
 
     /// The total duration of the timer in seconds.
-    public let totalDuration: Int
+    @Published public var totalDuration: Int
     
     /// The current paused state of the GTTimer
     @Published public var isPaused: Bool
@@ -62,7 +62,7 @@ public class GTTimer: ObservableObject {
         self.color = color
         self.totalDuration = maxTime
         self.isPaused = true
-        self.timeRemaining = totalDuration
+        self.timeRemaining = maxTime
         initTimer()
     }
     
@@ -95,18 +95,15 @@ public class GTTimer: ObservableObject {
     
     func start(){
         self.isPaused = false
-        print("Timer '" + name + "' started")
     }
     
     func pause(){
         self.isPaused = true
-        print("Timer '" + name + "' paused")
     }
     
     func resume(){
         if isPaused {
             self.isPaused = false
-            print("Timer '" + name + "' resumed")
         }
     }
     
@@ -125,6 +122,7 @@ public class GTTimer: ObservableObject {
     // Returns 0 to 1, where 1 is 100% completion (0 secs left)
     //
     func getProgress() -> Double {
+        guard totalDuration > 0 else { return 1 }
         return 1-Double(timeRemaining)/Double(totalDuration)
     }
     

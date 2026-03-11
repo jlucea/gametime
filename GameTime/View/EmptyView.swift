@@ -15,11 +15,11 @@ struct EmptyView: View {
             
             Image(systemName: "clock")
             
-            Text(String(localized: "welcome_message"))
+            Text(String(localized: "empty_state.title"))
                 .font(.system(size: 28))
                 .padding()
             
-            Text(String(localized: "initial_instructions"))
+            Text(String(localized: "empty_state.subtitle"))
                 .font(.subheadline)
                 .padding()
             

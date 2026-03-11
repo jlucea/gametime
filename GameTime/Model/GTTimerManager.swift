@@ -1,5 +1,11 @@
 
 import Foundation
+import SwiftUI
+
+enum TimerNavigationDirection {
+    case next
+    case previous
+}
 
 /// Manages a collection of `GTTimers`, allowing for adding, deleting, and switching
 /// between active timers. The class maintains the concept of an "active" timer, which
@@ -16,6 +22,9 @@ final class GTTimerManager : ObservableObject {
     /// The currently active `GTTimer`, representing the selected timer.
     /// The active timer is updated when timers are added, deleted, or switched via methods like `activateNextTimer()` and `makeActive(_:)`.
     @Published private(set) var activeTimer: GTTimer?
+    
+    /// The last navigation direction used to switch the active timer.
+    @Published private(set) var lastNavigationDirection: TimerNavigationDirection = .next
         
     /// The index of the active timer in the `timers` array. Used internally to keep track of which timer is currently selected.
     private var activeTimerIndex: Int = 0
@@ -54,6 +63,7 @@ final class GTTimerManager : ObservableObject {
     func activateNextTimer() {
         guard !timers.isEmpty else { return }
         
+        lastNavigationDirection = .next
         activeTimer?.pause()
         if (activeTimerIndex < timers.count-1 ) {
             activeTimerIndex+=1
@@ -64,6 +74,25 @@ final class GTTimerManager : ObservableObject {
         activeTimer = timers[activeTimerIndex]
 
         if (activeTimer?.timeRemaining ?? 0 > 0 ) {
+            activeTimer?.resume()
+        }
+    }
+    
+    /// Activates the previous timer in the array. If the active timer is the first one,
+    /// it cycles back to the last timer in the array.
+    func activatePreviousTimer() {
+        guard !timers.isEmpty else { return }
+        
+        lastNavigationDirection = .previous
+        activeTimer?.pause()
+        if activeTimerIndex > 0 {
+            activeTimerIndex -= 1
+        } else {
+            activeTimerIndex = timers.count - 1
+        }
+        activeTimer = timers[activeTimerIndex]
+        
+        if (activeTimer?.timeRemaining ?? 0 > 0) {
             activeTimer?.resume()
         }
     }
@@ -101,6 +130,9 @@ final class GTTimerManager : ObservableObject {
     /// - Parameter timer: The `GTTimer` instance to be made active.
     func makeActive(_ timer: GTTimer) {
         guard let timerIndex = timers.firstIndex(where: { $0.id == timer.id }) else { return }
+        guard timerIndex != activeTimerIndex else { return }
+        
+        lastNavigationDirection = timerIndex < activeTimerIndex ? .previous : .next
 
         var wasRunning = false
         if let previousActiveTimer = activeTimer, !previousActiveTimer.isPaused {
@@ -125,6 +157,47 @@ final class GTTimerManager : ObservableObject {
     /// - Returns: `true` if the specified timer is the active timer, otherwise `false`.
     func isActive(timer: GTTimer) -> Bool {
         return timer.id == activeTimer?.id
+    }
+    
+    /// Updates an existing timer with new configuration values.
+    ///
+    /// If the timer is currently running, it is paused before applying changes.
+    /// The elapsed time is preserved so the remaining time is recalculated against the new total duration.
+    ///
+    /// - Parameters:
+    ///   - timer: The timer to update.
+    ///   - name: The updated timer name.
+    ///   - color: The updated timer color.
+    ///   - totalDuration: The updated total duration in seconds.
+    func updateTimer(_ timer: GTTimer, name: String, color: Color, totalDuration: Int) {
+        guard timers.contains(where: { $0.id == timer.id }) else { return }
+        
+        if !timer.isPaused {
+            timer.pause()
+        }
+        
+        let elapsedTime = max(timer.totalDuration - timer.timeRemaining, 0)
+        let adjustedTotalDuration = max(totalDuration, 0)
+        
+        timer.name = name
+        timer.color = color
+        timer.totalDuration = adjustedTotalDuration
+        timer.timeRemaining = max(adjustedTotalDuration - elapsedTime, 0)
+    }
+    
+    /// Resets a timer back to its configured maximum duration.
+    ///
+    /// If the timer is currently running, it is paused first.
+    ///
+    /// - Parameter timer: The timer to reset.
+    func resetTimer(_ timer: GTTimer) {
+        guard timers.contains(where: { $0.id == timer.id }) else { return }
+        
+        if !timer.isPaused {
+            timer.pause()
+        }
+        
+        timer.timeRemaining = timer.totalDuration
     }
     
 }

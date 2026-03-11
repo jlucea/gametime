@@ -11,6 +11,7 @@ struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @State private var showAddNewTimerScreen: Bool = false
+    @State private var timerToEdit: GTTimer?
     
     var body: some View {
         NavigationView {
@@ -43,14 +44,9 @@ struct MainView: View {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                         .padding(.horizontal, 24)
                                     
-                                    // Timer list
-                                    List {
-                                        ForEach(timerManager.timers, id: \.id) { timer in
-                                            TimerRowView(timer: timer)
-                                        }
+                                    TimerListView { timer in
+                                        timerToEdit = timer
                                     }
-                                    .listStyle(.plain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             } else {
@@ -58,14 +54,9 @@ struct MainView: View {
                                 VStack(spacing: 10) {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                     
-                                    // Timer list
-                                    List {
-                                        ForEach(timerManager.timers, id: \.id) { timer in
-                                            TimerRowView(timer: timer)
-                                        }
+                                    TimerListView { timer in
+                                        timerToEdit = timer
                                     }
-                                    .listStyle(.plain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                             }
@@ -77,6 +68,20 @@ struct MainView: View {
                 GameTimeToolbar.content(showAddNewTimerScreen: $showAddNewTimerScreen, controller: timerManager)
             }
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(item: $timerToEdit) { timer in
+            TimerEditorView(
+                mode: .edit(timer: timer),
+                isPresented: Binding(
+                    get: { timerToEdit != nil },
+                    set: { isPresented in
+                        if !isPresented {
+                            timerToEdit = nil
+                        }
+                    }
+                )
+            )
+            .environmentObject(timerManager)
         }
         .onChange(of: scenePhase) { newPhase in
             PhaseChangeHandler.shared.onPhaseChange(newPhase, timerController: timerManager)

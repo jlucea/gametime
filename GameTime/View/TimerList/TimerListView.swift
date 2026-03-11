@@ -1,0 +1,51 @@
+import SwiftUI
+
+/// Reusable timer list view
+struct TimerListView: View {
+    
+    @EnvironmentObject private var timerManager: GTTimerManager
+    
+    let onEdit: (GTTimer) -> Void
+    
+    var body: some View {
+        List {
+            ForEach(timerManager.timers, id: \.id) { timer in
+                TimerRowView(timer: timer)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            timerManager.deleteTimer(timer)
+                        } label: {
+                            Label("timer_list.action.delete", systemImage: "trash.fill")
+                        }
+                        .tint(.red)
+                        
+                        Button {
+                            timerManager.resetTimer(timer)
+                        } label: {
+                            Label("timer_list.action.reset", systemImage: "arrow.counterclockwise.circle.fill")
+                        }
+                        .tint(.orange)
+                        
+                        Button {
+                            onEdit(timer)
+                        } label: {
+                            Label("timer_editor.action.edit", systemImage: "pencil")
+                        }
+                        .tint(.blue)
+                    }
+            }
+            .listRowSeparator(.hidden)
+        }
+        .listStyle(.plain)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+#Preview {
+    let timerOne = GTTimer(name: "Arya", color: .pink, maxTime: 1800, remainingTime: 1500)
+    let timerTwo = GTTimer(name: "Sansa", color: .cyan, maxTime: 2400, remainingTime: 2100)
+    let manager = GTTimerManager(timers: [timerOne, timerTwo], activeTimerIndex: 0)
+    
+    return TimerListView { _ in }
+        .environmentObject(manager)
+}

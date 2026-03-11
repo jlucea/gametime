@@ -10,7 +10,7 @@ import SwiftUI
 struct GameTimeToolbar {
         
     /// The title displayed in the center of the toolbar.
-    private static let toolbarTitle = "GameTime"
+    private static let toolbarTitleKey: LocalizedStringKey = "app.title"
     
     /**
      Generates the toolbar content for the `GameTime` application.
@@ -36,17 +36,22 @@ struct GameTimeToolbar {
                         .frame(width: 24, height: 24, alignment: .center)
                 })
                 .popover(isPresented: showAddNewTimerScreen, content: {
-                    CreateTimerView(isPresented: showAddNewTimerScreen, controller)
+                    TimerEditorView(mode: .create, isPresented: showAddNewTimerScreen)
+                        .environmentObject(controller)
                 } )
             }
-            ToolbarItem(placement: .principal) {
-                Text(toolbarTitle).font(.headline)
-            }
-            ToolbarItem(placement: .navigationBarLeading) {
-                if !controller.timers.isEmpty {
-                    EditButton()       // Tapping this button will activate editMode
-                }
-            }
+            
+            // Toolbar title and edit mode button are removed.
+            // Uncomment to re-enable them.
+            
+//            ToolbarItem(placement: .principal) {
+//                Text(toolbarTitleKey).font(.headline)
+//            }
+//            ToolbarItem(placement: .navigationBarLeading) {
+//                if !controller.timers.isEmpty {
+//                    EditButton()       // Tapping this button will activate editMode
+//                }
+//            }
         }
     }
     
