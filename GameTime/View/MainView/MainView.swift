@@ -11,7 +11,6 @@ struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @State private var showAddNewTimerScreen: Bool = false
-    @State private var showEditTimerScreen: Bool = false
     @State private var timerToEdit: GTTimer?
     
     var body: some View {
@@ -45,23 +44,9 @@ struct MainView: View {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                         .padding(.horizontal, 24)
                                     
-                                    // Timer list
-                                    List {
-                                        ForEach(timerManager.timers, id: \.id) { timer in
-                                            TimerRowView(timer: timer)
-                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                                    Button {
-                                                        timerToEdit = timer
-                                                        showEditTimerScreen = true
-                                                    } label: {
-                                                        Label("timer_editor.action.edit", systemImage: "pencil")
-                                                    }
-                                                    .tint(.blue)
-                                                }
-                                        }
+                                    TimerList { timer in
+                                        timerToEdit = timer
                                     }
-                                    .listStyle(.plain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             } else {
@@ -69,23 +54,9 @@ struct MainView: View {
                                 VStack(spacing: 10) {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                     
-                                    // Timer list
-                                    List {
-                                        ForEach(timerManager.timers, id: \.id) { timer in
-                                            TimerRowView(timer: timer)
-                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                                    Button {
-                                                        timerToEdit = timer
-                                                        showEditTimerScreen = true
-                                                    } label: {
-                                                        Label("timer_editor.action.edit", systemImage: "pencil")
-                                                    }
-                                                    .tint(.blue)
-                                                }
-                                        }
+                                    TimerList { timer in
+                                        timerToEdit = timer
                                     }
-                                    .listStyle(.plain)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                             }
@@ -98,13 +69,19 @@ struct MainView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
-        .sheet(isPresented: $showEditTimerScreen, onDismiss: {
-            timerToEdit = nil
-        }) {
-            if let timerToEdit {
-                TimerEditorView(mode: .edit(timer: timerToEdit), isPresented: $showEditTimerScreen)
-                    .environmentObject(timerManager)
-            }
+        .sheet(item: $timerToEdit) { timer in
+            TimerEditorView(
+                mode: .edit(timer: timer),
+                isPresented: Binding(
+                    get: { timerToEdit != nil },
+                    set: { isPresented in
+                        if !isPresented {
+                            timerToEdit = nil
+                        }
+                    }
+                )
+            )
+            .environmentObject(timerManager)
         }
         .onChange(of: scenePhase) { newPhase in
             PhaseChangeHandler.shared.onPhaseChange(newPhase, timerController: timerManager)

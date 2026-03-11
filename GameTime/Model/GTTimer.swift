@@ -30,7 +30,7 @@ import SwiftUI
 /// timer.start()
 /// ```
 ///
-public class GTTimer: ObservableObject {
+public class GTTimer: ObservableObject, Identifiable {
     /// A unique identifier for each GTTimer instance.
     public let id = UUID()
     
