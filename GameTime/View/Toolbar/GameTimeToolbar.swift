@@ -31,11 +31,10 @@ struct GameTimeToolbar {
                 Button(action: {
                     showAddNewTimerScreen.wrappedValue = true
                 }, label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "plus")
                         .resizable()
-                        .frame(width: 24, height: 24)
+                        .frame(width: 24, height: 24, alignment: .center)
                 })
-                .padding(.bottom, 6)
                 .popover(isPresented: showAddNewTimerScreen, content: {
                     CreateTimerView(isPresented: showAddNewTimerScreen, controller)
                 } )

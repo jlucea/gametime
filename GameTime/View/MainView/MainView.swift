@@ -10,7 +10,7 @@ struct MainView: View {
     @EnvironmentObject var timerManager: GTTimerManager
     @Environment(\.scenePhase) var scenePhase
     
-    @State private var showAddNewTimerScreen : Bool = false
+    @State private var showAddNewTimerScreen: Bool = false
     
     var body: some View {
         NavigationView {
