@@ -44,7 +44,7 @@ struct MainView: View {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                         .padding(.horizontal, 24)
                                     
-                                    TimerList { timer in
+                                    TimerListView { timer in
                                         timerToEdit = timer
                                     }
                                 }
@@ -54,7 +54,7 @@ struct MainView: View {
                                 VStack(spacing: 10) {
                                     ActiveTimerView(timer: timerManager.activeTimer!, size: .medium)
                                     
-                                    TimerList { timer in
+                                    TimerListView { timer in
                                         timerToEdit = timer
                                     }
                                 }

@@ -12,7 +12,7 @@
 		6F234713290290F700A765BE /* GTTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F234711290290F600A765BE /* GTTimer.swift */; };
 		6F2347162902934C00A765BE /* GTTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2347152902934C00A765BE /* GTTimerManager.swift */; };
 		6F357A762D08B5620024F0F1 /* TimerRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F357A752D08B5620024F0F1 /* TimerRowView.swift */; };
-		6F3A9D1F2E1C4B8A00D11111 /* TimerList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3A9D1E2E1C4B8A00D11111 /* TimerList.swift */; };
+		6F3A9D1F2E1C4B8A00D11111 /* TimerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3A9D1E2E1C4B8A00D11111 /* TimerListView.swift */; };
 		6F45A4DA2D1593E50042D03F /* PhaseChangeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45A4D92D1593E50042D03F /* PhaseChangeHandler.swift */; };
 		6F45A4DD2D1599940042D03F /* GameTimeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45A4DC2D1599940042D03F /* GameTimeToolbar.swift */; };
 		6F46D5122D2DB7A900963A18 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6F46D5112D2DB7A900963A18 /* Localizable.xcstrings */; };
@@ -37,7 +37,7 @@
 		6F234711290290F600A765BE /* GTTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GTTimer.swift; sourceTree = "<group>"; };
 		6F2347152902934C00A765BE /* GTTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTTimerManager.swift; sourceTree = "<group>"; };
 		6F357A752D08B5620024F0F1 /* TimerRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerRowView.swift; sourceTree = "<group>"; };
-		6F3A9D1E2E1C4B8A00D11111 /* TimerList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerList.swift; sourceTree = "<group>"; };
+		6F3A9D1E2E1C4B8A00D11111 /* TimerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerListView.swift; sourceTree = "<group>"; };
 		6F45A4D92D1593E50042D03F /* PhaseChangeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhaseChangeHandler.swift; sourceTree = "<group>"; };
 		6F45A4DC2D1599940042D03F /* GameTimeToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTimeToolbar.swift; sourceTree = "<group>"; };
 		6F46D5112D2DB7A900963A18 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = GameTime/Localizable.xcstrings; sourceTree = "<group>"; };
@@ -96,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				6F357A752D08B5620024F0F1 /* TimerRowView.swift */,
-				6F3A9D1E2E1C4B8A00D11111 /* TimerList.swift */,
+				6F3A9D1E2E1C4B8A00D11111 /* TimerListView.swift */,
 			);
 			path = TimerList;
 			sourceTree = "<group>";
@@ -266,7 +266,7 @@
 				6F45A4DD2D1599940042D03F /* GameTimeToolbar.swift in Sources */,
 				6F45A4DA2D1593E50042D03F /* PhaseChangeHandler.swift in Sources */,
 				6FA853CD28FB1A78005E4EC1 /* MainView.swift in Sources */,
-				6F3A9D1F2E1C4B8A00D11111 /* TimerList.swift in Sources */,
+				6F3A9D1F2E1C4B8A00D11111 /* TimerListView.swift in Sources */,
 				6FA853D928FB1F03005E4EC1 /* TimerCardView.swift in Sources */,
 				6F0F9067290E929D000E7E22 /* CircularProgressView.swift in Sources */,
 				6F908BD82D0711DE000745F9 /* TimerDuration.swift in Sources */,

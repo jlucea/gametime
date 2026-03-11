@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Reusable timer list used across iPhone layouts in `MainView`.
-struct TimerList: View {
+/// Reusable timer list view
+struct TimerListView: View {
     
     @EnvironmentObject private var timerManager: GTTimerManager
     
@@ -34,6 +34,7 @@ struct TimerList: View {
                         .tint(.blue)
                     }
             }
+            .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -45,6 +46,6 @@ struct TimerList: View {
     let timerTwo = GTTimer(name: "Sansa", color: .cyan, maxTime: 2400, remainingTime: 2100)
     let manager = GTTimerManager(timers: [timerOne, timerTwo], activeTimerIndex: 0)
     
-    return TimerList { _ in }
+    return TimerListView { _ in }
         .environmentObject(manager)
 }
