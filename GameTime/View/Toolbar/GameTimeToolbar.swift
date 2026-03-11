@@ -40,14 +40,18 @@ struct GameTimeToolbar {
                         .environmentObject(controller)
                 } )
             }
-            ToolbarItem(placement: .principal) {
-                Text(toolbarTitleKey).font(.headline)
-            }
-            ToolbarItem(placement: .navigationBarLeading) {
-                if !controller.timers.isEmpty {
-                    EditButton()       // Tapping this button will activate editMode
-                }
-            }
+            
+            // Toolbar title and edit mode button are removed.
+            // Uncomment to re-enable them.
+            
+//            ToolbarItem(placement: .principal) {
+//                Text(toolbarTitleKey).font(.headline)
+//            }
+//            ToolbarItem(placement: .navigationBarLeading) {
+//                if !controller.timers.isEmpty {
+//                    EditButton()       // Tapping this button will activate editMode
+//                }
+//            }
         }
     }
     
