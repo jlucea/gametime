@@ -1,62 +1,91 @@
 
 import SwiftUI
 
-extension CreateTimerView {
+extension TimerEditorView {
     
-    /// ViewModel for the CreateTimerView, responsible for managing the timer creation form.
+    /// ViewModel for `TimerEditorView`, responsible for managing editor state for create/edit flows.
     class ViewModel: ObservableObject {
         
-        /// The name of the timer being created.
+        /// The name of the timer being edited.
         @Published var name: String = ""
         
-        /// The color of the timer being created.
+        /// The color of the timer being edited.
         @Published var color: Color = .blue
         
-        /// The selected time for the timer in hours, minutes, and seconds.
+        /// The selected timer duration in hours, minutes, and seconds.
         @Published var duration: TimerDuration
         
-        /// A binding to control the presentation of the CreateTimerView. Setting it to `false` dismisses the view.
+        /// A binding to control editor presentation. Setting it to `false` dismisses the view.
         @Binding var isPresented: Bool
         
-        /// The timer manager responsible for managing and storing timers. This can be nil if no manager is provided.
-        var manager: GTTimerManager?
+        private let mode: TimerEditorView.Mode
         
-        private static let lastTimerDurationKey: String = "lastTimerDuration"
+        private static let lastTimerDurationKey = "lastTimerDuration"
         
-        /// Initializes the ViewModel with a binding to control view dismissal and an optional timer manager.
+        var isCreateMode: Bool {
+            if case .create = mode {
+                return true
+            }
+            return false
+        }
+        
+        var autofocusNameField: Bool {
+            isCreateMode
+        }
+        
+        /// Initializes the editor with a mode and a binding to control dismissal.
         /// - Parameters:
+        ///   - mode: The editor mode, used to load create defaults or an existing timer values.
         ///   - isPresented: A binding to a Boolean controlling the presentation of the view.
-        ///   - timerManager: An optional timer manager to which the new timer will be added.
-        init(isPresented: Binding<Bool>, _ timerManager: GTTimerManager? = nil) {
+        init(mode: TimerEditorView.Mode, isPresented: Binding<Bool>) {
+            self.mode = mode
             self._isPresented = isPresented
-            self.manager = timerManager
             
-            if let lastTimerDuration = UserDefaults.standard.object(forKey: CreateTimerView.ViewModel.lastTimerDurationKey) as? [String: Int] {
-                self.duration = TimerDuration(hours: lastTimerDuration["hours"] ?? 0, minutes: lastTimerDuration["minutes"] ?? 0, seconds: lastTimerDuration["seconds"] ?? 0)
-            } else {
-                self.duration = .init(hours: 0, minutes: 30, seconds: 0)
+            switch mode {
+            case .create:
+                if let lastTimerDuration = UserDefaults.standard.object(forKey: ViewModel.lastTimerDurationKey) as? [String: Int] {
+                    self.duration = TimerDuration(hours: lastTimerDuration["hours"] ?? 0, minutes: lastTimerDuration["minutes"] ?? 0, seconds: lastTimerDuration["seconds"] ?? 0)
+                } else {
+                    self.duration = .init(hours: 0, minutes: 30, seconds: 0)
+                }
+            case .edit(let timer):
+                self.name = timer.name
+                self.color = timer.color
+                self.duration = Self.timerDuration(seconds: timer.totalDuration)
             }
         }
         
-        /// Saves the new timer using the provided details and dismisses the view.
-        func saveAndClose() {
+        /// Saves changes and dismisses the editor.
+        func saveAndClose(using manager: GTTimerManager) {
             
             let totalSecondsSelected = duration.hours * 3600 + duration.minutes * 60 + duration.seconds
             
-            print("Create new timer:")
+            print("Timer editor save:")
             print("Name: \(name)")
             print("Duration: \(totalSecondsSelected)")
             print("Color \(color.description)")
             
-            // Instantiate and add new timer
-            let newTimer = GTTimer(name: name, color: color, maxTime: totalSecondsSelected)
-            manager?.addTimer(timer: newTimer)
+            switch mode {
+            case .create:
+                let newTimer = GTTimer(name: name, color: color, maxTime: totalSecondsSelected)
+                manager.addTimer(timer: newTimer)
+            case .edit(let timer):
+                manager.updateTimer(timer, name: name, color: color, totalDuration: totalSecondsSelected)
+            }
             
             // Store chosen duration
             let durationDict = ["hours": duration.hours, "minutes": duration.minutes, "seconds": duration.seconds]
-            UserDefaults.standard.set(durationDict, forKey: CreateTimerView.ViewModel.lastTimerDurationKey)
+            UserDefaults.standard.set(durationDict, forKey: ViewModel.lastTimerDurationKey)
             
             self.isPresented = false
+        }
+        
+        private static func timerDuration(seconds: Int) -> TimerDuration {
+            let clampedSeconds = max(seconds, 0)
+            let hours = clampedSeconds / 3600
+            let minutes = (clampedSeconds % 3600) / 60
+            let remainingSeconds = clampedSeconds % 60
+            return TimerDuration(hours: hours, minutes: minutes, seconds: remainingSeconds)
         }
                 
     }

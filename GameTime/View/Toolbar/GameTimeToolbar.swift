@@ -36,7 +36,8 @@ struct GameTimeToolbar {
                         .frame(width: 24, height: 24, alignment: .center)
                 })
                 .popover(isPresented: showAddNewTimerScreen, content: {
-                    CreateTimerView(isPresented: showAddNewTimerScreen, controller)
+                    TimerEditorView(mode: .create, isPresented: showAddNewTimerScreen)
+                        .environmentObject(controller)
                 } )
             }
             ToolbarItem(placement: .principal) {

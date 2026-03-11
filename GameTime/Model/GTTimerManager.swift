@@ -1,5 +1,6 @@
 
 import Foundation
+import SwiftUI
 
 /// Manages a collection of `GTTimers`, allowing for adding, deleting, and switching
 /// between active timers. The class maintains the concept of an "active" timer, which
@@ -125,6 +126,32 @@ final class GTTimerManager : ObservableObject {
     /// - Returns: `true` if the specified timer is the active timer, otherwise `false`.
     func isActive(timer: GTTimer) -> Bool {
         return timer.id == activeTimer?.id
+    }
+    
+    /// Updates an existing timer with new configuration values.
+    ///
+    /// If the timer is currently running, it is paused before applying changes.
+    /// The elapsed time is preserved so the remaining time is recalculated against the new total duration.
+    ///
+    /// - Parameters:
+    ///   - timer: The timer to update.
+    ///   - name: The updated timer name.
+    ///   - color: The updated timer color.
+    ///   - totalDuration: The updated total duration in seconds.
+    func updateTimer(_ timer: GTTimer, name: String, color: Color, totalDuration: Int) {
+        guard timers.contains(where: { $0.id == timer.id }) else { return }
+        
+        if !timer.isPaused {
+            timer.pause()
+        }
+        
+        let elapsedTime = max(timer.totalDuration - timer.timeRemaining, 0)
+        let adjustedTotalDuration = max(totalDuration, 0)
+        
+        timer.name = name
+        timer.color = color
+        timer.totalDuration = adjustedTotalDuration
+        timer.timeRemaining = max(adjustedTotalDuration - elapsedTime, 0)
     }
     
 }

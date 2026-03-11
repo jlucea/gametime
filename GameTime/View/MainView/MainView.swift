@@ -11,6 +11,8 @@ struct MainView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @State private var showAddNewTimerScreen: Bool = false
+    @State private var showEditTimerScreen: Bool = false
+    @State private var timerToEdit: GTTimer?
     
     var body: some View {
         NavigationView {
@@ -47,6 +49,15 @@ struct MainView: View {
                                     List {
                                         ForEach(timerManager.timers, id: \.id) { timer in
                                             TimerRowView(timer: timer)
+                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                                    Button {
+                                                        timerToEdit = timer
+                                                        showEditTimerScreen = true
+                                                    } label: {
+                                                        Label("timer_editor.button.edit", systemImage: "pencil")
+                                                    }
+                                                    .tint(.blue)
+                                                }
                                         }
                                     }
                                     .listStyle(.plain)
@@ -62,6 +73,15 @@ struct MainView: View {
                                     List {
                                         ForEach(timerManager.timers, id: \.id) { timer in
                                             TimerRowView(timer: timer)
+                                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                                    Button {
+                                                        timerToEdit = timer
+                                                        showEditTimerScreen = true
+                                                    } label: {
+                                                        Label("timer_editor.button.edit", systemImage: "pencil")
+                                                    }
+                                                    .tint(.blue)
+                                                }
                                         }
                                     }
                                     .listStyle(.plain)
@@ -77,6 +97,14 @@ struct MainView: View {
                 GameTimeToolbar.content(showAddNewTimerScreen: $showAddNewTimerScreen, controller: timerManager)
             }
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(isPresented: $showEditTimerScreen, onDismiss: {
+            timerToEdit = nil
+        }) {
+            if let timerToEdit {
+                TimerEditorView(mode: .edit(timer: timerToEdit), isPresented: $showEditTimerScreen)
+                    .environmentObject(timerManager)
+            }
         }
         .onChange(of: scenePhase) { newPhase in
             PhaseChangeHandler.shared.onPhaseChange(newPhase, timerController: timerManager)
