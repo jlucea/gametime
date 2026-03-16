@@ -35,7 +35,8 @@ struct GameTimeToolbar {
                         .resizable()
                         .frame(width: 24, height: 24, alignment: .center)
                 })
-                .popover(isPresented: showAddNewTimerScreen, content: {
+                // Timer creation uses a sheet so the keyboard does not collapse the form on iPad.
+                .sheet(isPresented: showAddNewTimerScreen, content: {
                     TimerEditorView(mode: .create, isPresented: showAddNewTimerScreen)
                         .environmentObject(controller)
                 } )
