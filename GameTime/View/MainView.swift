@@ -69,6 +69,7 @@ struct MainView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(item: $timerToEdit) { timer in
             TimerEditorView(
                 mode: .edit(timer: timer),
