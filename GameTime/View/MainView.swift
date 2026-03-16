@@ -29,8 +29,10 @@ struct MainView: View {
                         ScrollView(.horizontal) {
                             HStack {
                                 ForEach(timerManager.timers, id: \.id) { timer in
-                                    TimerCardView(timer: timer)
-                                        .padding(.trailing, 8)
+                                    TimerCardView(timer: timer) { selectedTimer in
+                                        timerToEdit = selectedTimer
+                                    }
+                                    .padding(.trailing, 8)
                                 }
                             }
                         }
@@ -71,6 +73,7 @@ struct MainView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(item: $timerToEdit) { timer in
+            // MARK: Edit
             TimerEditorView(
                 mode: .edit(timer: timer),
                 isPresented: Binding(
