@@ -13,13 +13,13 @@ GameTime reacts to changes in the state of the app, discounting from the active 
 
 The user can also delete timers at any time.
 
-
 ![iPad Pro in space grey or silver color_Simulator Screen Shot - iPad Pro (12 9-inch) (6th generation) - 2022-11-09 at 13 27 37](https://user-images.githubusercontent.com/26114098/200887822-6fb0b9df-26e7-42d4-9cd0-0436d1292a8a.png)
 
 # Technical Details
 
 GameTime is developed in SwiftUI. Several views in the app update simultaneously based on a single source of truth: the active timer's state.
 
+<img width="320" height="782" alt="Simulator Screenshot - iPhone 17 - 2026-03-16 at 10 04 01" src="https://github.com/user-attachments/assets/6fb37e34-8271-4037-aded-5755713f61bc" />
 
 # Copyright
 
